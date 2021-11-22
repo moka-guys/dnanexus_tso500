@@ -53,18 +53,18 @@
       "help": "stdout logs from RUO.",
       "class": "array:file"
     },
-	{
-		"name": "fastqs",
-		"label": "fastqs",
-		"help": "fastqs.",
-		"class": "array:file"
-	  },
-	{
-		"name": "bams_for_coverage",
-		"label": "bams_for_coverage",
-		"help": "BAM files for coverage.",
-		"class": "array:file"
-	  },
+  {
+      "name": "fastqs",
+      "label": "fastqs",
+      "help": "fastqs.",
+      "class": "array:file"
+    },
+  {
+      "name": "bams_for_coverage",
+      "label": "bams_for_coverage",
+      "help": "BAM files for coverage.",
+      "c lass": "array:file"
+    },
     {
       "name": "results_zip",
       "label": "zipped results folder",
