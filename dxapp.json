@@ -63,7 +63,7 @@
       "name": "bams_for_coverage",
       "label": "bams_for_coverage",
       "help": "BAM files for coverage.",
-      "c lass": "array:file"
+      "class": "array:file"
     },
     {
       "name": "results_zip",
