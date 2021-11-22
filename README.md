@@ -1,4 +1,4 @@
-# TSO500 v1.0
+# TSO500 v1.1
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
@@ -17,11 +17,13 @@ Runs the Illumina TSO500 local analysis app.
 ## What does this app output
 * RUO_stdout.txt - STDout from RUO. Saved into /logs
 * The analysis folder. Saved into /analysis_folder
+* results zip folder containing zipped folders for each sample.
+* fastqs - the content of analysis_folder/Logs_Intermediates/CollapsedReads (contains fastqs and all logs)
+* stitchedrealigned BAMs - the content of analysis_folder/Logs_Intermediates/StitchedRealigned (contains BAMs and all logs)
 
 ## Notes
 * Only tested from starting point of BCLs
 * analysis_options is not thoroughly tested.
 * Samplesheet input could be made optional in future - if not specified the analysis app looks for SampleSheet.csv in top level of runfolder
-* Recommended instance type not yet tested - instance type in json (mem1_ssd1_x32) provides 60382MB memory and 639GB SSD storage.
 
 ## This app was made by Viapath Genome Informatics

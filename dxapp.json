@@ -1,11 +1,11 @@
 {
-  "name": "TSO500_v1.0",
-  "title": "TSO500_v1.0",
-  "summary": "v1.0 - TSO500",
+  "name": "TSO500_v1.1",
+  "title": "TSO500_v1.1",
+  "summary": "v1.1 - TSO500",
   "tags": [
   ],
   "properties": {
-    "github release": "v1.0"
+    "github release": "v1.1"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -52,6 +52,24 @@
       "label": "logs",
       "help": "stdout logs from RUO.",
       "class": "array:file"
+    },
+	{
+		"name": "fastqs",
+		"label": "fastqs",
+		"help": "fastqs.",
+		"class": "array:file"
+	  },
+	{
+		"name": "bams_for_coverage",
+		"label": "bams_for_coverage",
+		"help": "BAM files for coverage.",
+		"class": "array:file"
+	  },
+    {
+      "name": "results_zip",
+      "label": "zipped results folder",
+      "help": "zipped results folder.",
+      "class": "file"
     }
   ],
   "runSpec": {
@@ -74,7 +92,7 @@
     "aws:us-east-1": {
       "systemRequirements": {
         "main": {
-          "instanceType": "mem1_ssd1_x32"
+          "instanceType": "mem1_ssd1_v2_x36"
         }
       }
     }
