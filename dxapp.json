@@ -1,11 +1,11 @@
 {
-  "name": "TSO500_v1.1",
-  "title": "TSO500_v1.1",
-  "summary": "v1.1 - TSO500",
+  "name": "TSO500_v1.2",
+  "title": "TSO500_v1.2",
+  "summary": "v1.2 - TSO500",
   "tags": [
   ],
   "properties": {
-    "github release": "v1.1"
+    "github release": "v1.2"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -69,6 +69,12 @@
       "name": "results_zip",
       "label": "zipped results folder",
       "help": "zipped results folder.",
+      "class": "file"
+    },
+    {
+      "name": "metrics_tsv",
+      "label": "metrics_tsv",
+      "help": "metrics tsv file.",
       "class": "file"
     }
   ],

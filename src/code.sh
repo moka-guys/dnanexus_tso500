@@ -4,7 +4,7 @@
 set -x +e
 mark-section "download inputs"
 
-mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_zip/Results/
+mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC
 
 # download all inputs
 dx-download-all-inputs --parallel --except run_folder
@@ -46,7 +46,8 @@ cd ~
 mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/
 # mv the bams (for coverage) so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
 mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/
-
+# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
+cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/metrics_tsv/QC/
 # upload all outputs
 dx-upload-all-outputs --parallel
 
