@@ -1,4 +1,4 @@
-# TSO500 v1.1
+# TSO500 v1.2
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
@@ -20,6 +20,7 @@ Runs the Illumina TSO500 local analysis app.
 * results zip folder containing zipped folders for each sample.
 * fastqs - the content of analysis_folder/Logs_Intermediates/CollapsedReads (contains fastqs and all logs)
 * stitchedrealigned BAMs - the content of analysis_folder/Logs_Intermediates/StitchedRealigned (contains BAMs and all logs)
+* metrics_tsv file - An copy of the MetricsOutput.tsv is output into /QC so it can be accessed by multiqc.
 
 ## Notes
 * Only tested from starting point of BCLs
