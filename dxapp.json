@@ -1,11 +1,11 @@
 {
-  "name": "TSO500_v1.2",
-  "title": "TSO500_v1.2",
-  "summary": "v1.2 - TSO500",
+  "name": "TSO500_v1.3",
+  "title": "TSO500_v1.3",
+  "summary": "v1.3 - TSO500",
   "tags": [
   ],
   "properties": {
-    "github release": "v1.2"
+    "github release": "v1.3"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -45,37 +45,50 @@
       "name": "analysis_folder",
       "label": "analysis_folder",
       "help": "All files within the analysis folder.",
-      "class": "array:file"
+      "class": "array:file",
+      "optional": true
     },
     {
       "name": "logs",
       "label": "logs",
       "help": "stdout logs from RUO.",
-      "class": "array:file"
+      "class": "array:file",
+      "optional": true
     },
   {
       "name": "fastqs",
       "label": "fastqs",
       "help": "fastqs.",
-      "class": "array:file"
+      "class": "array:file",
+      "optional": true
     },
-  {
+    {
       "name": "bams_for_coverage",
       "label": "bams_for_coverage",
       "help": "BAM files for coverage.",
-      "class": "array:file"
+      "class": "array:file",
+      "optional": true
+    },
+    {
+      "name": "QC_files",
+      "label": "QC_files",
+      "help": "Any other QC files for MultiQC.",
+      "class": "array:file",
+      "optional": true
     },
     {
       "name": "results_zip",
       "label": "zipped results folder",
       "help": "zipped results folder.",
-      "class": "file"
+      "class": "file",
+      "optional": true
     },
     {
       "name": "metrics_tsv",
       "label": "metrics_tsv",
       "help": "metrics tsv file.",
-      "class": "file"
+      "class": "file",
+      "optional": true
     }
   ],
   "runSpec": {
