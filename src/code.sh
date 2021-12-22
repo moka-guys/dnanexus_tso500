@@ -4,7 +4,7 @@
 set -x +e
 mark-section "download inputs"
 
-mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC
+mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/demultiplex_stats
 
 # download all inputs
 dx-download-all-inputs --parallel --except run_folder
@@ -26,28 +26,51 @@ sudo docker load --input /home/dnanexus/trusight-oncology-500-ruo-dockerimage-ru
 # pipe stderr into stdout and write this to a file and to screen - this allows a record of the logs to be saved and visible on screen if it goes wrong
 sudo bash TSO500_ruo/TSO500_RUO_LocalApp/TruSight_Oncology_500_RUO.sh --analysisFolder /home/dnanexus/out/analysis_folder/analysis_folder --runFolder /home/dnanexus/runfolder/* --sampleSheet $samplesheet_path --resourcesFolder /home/dnanexus/TSO500_ruo/TSO500_RUO_LocalApp/resources $analysis_options 2>&1 | tee /home/dnanexus/out/logs/logs/RUO_stdout.txt
 
-# create a zip folder for each individual sample
-# first, to ensure each zip folder doesn't contain the full file tree cd into the results folder
-cd  /home/dnanexus/out/analysis_folder/analysis_folder/Results;
-# loop through samples, only selecting directories
-for sample in ./*; do
-	if [[ -d $sample ]];
+# check if the results folder exists:
+if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
+	then 
+	# create a zip folder for each individual sample
+	# first, to ensure each zip folder doesn't contain the full file tree cd into the results folder
+	cd  /home/dnanexus/out/analysis_folder/analysis_folder/Results;
+	# loop through samples, only selecting directories
+	for sample in ./*; do
+		if [[ -d $sample ]];
+			then 
+			# create a zip folder for that specific sample outside of any output folders - these will be zipped together later
+			zip -r /home/dnanexus/results_temp/$sample.zip $sample
+		fi
+	done
+	cd /home/dnanexus/results_temp/
+	# copy the metrics tsv file into the results zip 
+	cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv ./
+	# create a zip folder containing zipped folders for each sample
+	zip -r /home/dnanexus/out/results_zip/Results.zip .
+	cd ~
+	# check if folder exists before trying to move
+	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads" ]]
 		then 
-		# create a zip folder for that specific sample outside of any output folders - these will be zipped together later
-		zip -r /home/dnanexus/results_temp/$sample.zip $sample
+		# move the fastq output so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
+		mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/
 	fi
-done
-cd /home/dnanexus/results_temp/
-# create a zip folder containing zipped folders for each sample
-zip -r /home/dnanexus/out/results_zip/Results.zip .
-cd ~
-
-# move the fastq output so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
-mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/
-# mv the bams (for coverage) so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
-mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/
-# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
-cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/metrics_tsv/QC/
+	# check if folder exists before trying to move
+	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/StitchedRealigned" ]]
+		then
+		# mv the bams (for coverage) so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
+		mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/
+	fi
+	# check if file exists before trying to move
+	if [[ -e "/home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv" ]]
+		then
+		# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
+		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/metrics_tsv/QC/
+	fi
+	# copy the demultiplex stats - maintain folder structure as files are named the same for each lane and this would break multiqc app (having multiple files with same name)
+	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports" ]]
+		then 
+		# move the contents of the DNA Reports folder (one folder per lane) recursively into /QC/demultiplex_stats
+		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports/* /home/dnanexus/out/QC_files/QC/demultiplex_stats/
+	fi
+fi
 # upload all outputs
 dx-upload-all-outputs --parallel
 

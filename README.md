@@ -1,4 +1,4 @@
-# TSO500 v1.2
+# TSO500 v1.3
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
@@ -17,10 +17,11 @@ Runs the Illumina TSO500 local analysis app.
 ## What does this app output
 * RUO_stdout.txt - STDout from RUO. Saved into /logs
 * The analysis folder. Saved into /analysis_folder
-* results zip folder containing zipped folders for each sample.
+* results zip folder containing zipped folders for each sample and the metrics.tsv.
 * fastqs - the content of analysis_folder/Logs_Intermediates/CollapsedReads (contains fastqs and all logs)
 * stitchedrealigned BAMs - the content of analysis_folder/Logs_Intermediates/StitchedRealigned (contains BAMs and all logs)
 * metrics_tsv file - An copy of the MetricsOutput.tsv is output into /QC so it can be accessed by multiqc.
+* QC files - MultiQC compatible files saved to /QC (currently bclconvert stats files)
 
 ## Notes
 * Only tested from starting point of BCLs
