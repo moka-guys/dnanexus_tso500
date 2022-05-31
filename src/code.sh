@@ -4,7 +4,7 @@
 set -x +e
 mark-section "download inputs"
 
-mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/demultiplex_stats
+mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/demultiplex_stats
 
 # download all inputs
 dx-download-all-inputs --parallel --except run_folder
@@ -26,6 +26,7 @@ sudo docker load --input /home/dnanexus/trusight-oncology-500-ruo-dockerimage-ru
 # pipe stderr into stdout and write this to a file and to screen - this allows a record of the logs to be saved and visible on screen if it goes wrong
 sudo bash TSO500_ruo/TSO500_RUO_LocalApp/TruSight_Oncology_500_RUO.sh --analysisFolder /home/dnanexus/out/analysis_folder/analysis_folder --runFolder /home/dnanexus/runfolder/* --sampleSheet $samplesheet_path --resourcesFolder /home/dnanexus/TSO500_ruo/TSO500_RUO_LocalApp/resources $analysis_options 2>&1 | tee /home/dnanexus/out/logs/logs/RUO_stdout.txt
 
+### organise outputs to support use in downstream applications
 # check if the results folder exists:
 if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 	then 
@@ -63,6 +64,12 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 		then
 		# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
 		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/metrics_tsv/QC/
+	fi
+		# check if folder exists before trying to move
+	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
+		then
+		# mv the vcf results files (for sompy) so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
+		mv /home/dnanexus/out/analysis_folder/analysis_folder/Results /home/dnanexus/out/results_vcfs/analysis_folder/
 	fi
 	# copy the demultiplex stats - maintain folder structure as files are named the same for each lane and this would break multiqc app (having multiple files with same name)
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports" ]]
