@@ -1,4 +1,4 @@
-# TSO500 v1.4
+# TSO500 v1.4.0
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
