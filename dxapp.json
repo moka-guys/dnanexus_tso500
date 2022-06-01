@@ -1,11 +1,11 @@
 {
-  "name": "TSO500_v1.3",
-  "title": "TSO500_v1.3",
-  "summary": "v1.3 - TSO500",
+  "name": "TSO500_v1.4.0",
+  "title": "TSO500_v1.4.0",
+  "summary": "v1.4.0 - TSO500",
   "tags": [
   ],
   "properties": {
-    "github release": "v1.3"
+    "github release": "v1.4.0"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -73,6 +73,13 @@
       "name": "QC_files",
       "label": "QC_files",
       "help": "Any other QC files for MultiQC.",
+      "class": "array:file",
+      "optional": true
+    },
+    {
+      "name": "results_vcfs",
+      "label": "results vcf files",
+      "help": "results vcf files",
       "class": "array:file",
       "optional": true
     },
