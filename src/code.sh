@@ -42,10 +42,29 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 		fi
 	done
 	cd /home/dnanexus/results_temp/
-	# copy the metrics tsv file into the results zip 
-	cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv ./
-	# create a zip folder containing zipped folders for each sample
-	zip -r /home/dnanexus/out/results_zip/Results.zip .
+	
+	# We want to create seperate zip folders for each pan number
+	# so first get a list of Pan numbers
+	for pannum in $(ls -d /home/dnanexus/out/analysis_folder/analysis_folder/Results/*/| grep -o -E "Pan[0-9]{1,5}"  | sort --unique)
+		do
+		#make folder
+		mkdir -p $pannum
+		# copy the metrics tsv file into the pan number subfolder
+		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv ./$pannum/
+		# there is one folder in the current working directory for each sample)
+		# we want to check if it's the current pan number and if so move it into the subfolder
+		for folder in $(ls -d */)
+			do 
+			# check if sample folder contains the pan number, and also exclude the pan number folder itself
+			if [[ "$folder" == *"$pannum"* ]] && [[ "$folder" != "$pannum"* ]] 
+			then
+				mv $folder ./$pannum/
+			fi
+			done
+		# now all samples have been moved into subfolder create a zip folder in output dir for the pan number
+		zip -r /home/dnanexus/out/results_zip/"$pannum"_Results.zip $pannum
+		done
+
 	cd ~
 	# check if folder exists before trying to move
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads" ]]

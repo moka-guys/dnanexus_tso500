@@ -1,11 +1,11 @@
 {
-  "name": "TSO500_v1.4.0",
-  "title": "TSO500_v1.4.0",
-  "summary": "v1.4.0 - TSO500",
+  "name": "TSO500_v1.5.0",
+  "title": "TSO500_v1.5.0",
+  "summary": "v1.5.0 - TSO500",
   "tags": [
   ],
   "properties": {
-    "github release": "v1.4.0"
+    "github release": "v1.5.0"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -87,7 +87,7 @@
       "name": "results_zip",
       "label": "zipped results folder",
       "help": "zipped results folder.",
-      "class": "file",
+      "class": "array:file",
       "optional": true
     },
     {
@@ -102,7 +102,7 @@
     "execDepends": [
     ],
     "distribution" : "Ubuntu",
-    "release":"16.04",
+    "release":"20.04",
     "file": "src/code.sh",
     "interpreter": "bash",
     "assetDepends": [

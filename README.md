@@ -1,4 +1,4 @@
-# TSO500 v1.4.0
+# TSO500 v1.5.0
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
@@ -17,7 +17,7 @@ Runs the Illumina TSO500 local analysis app.
 ## What does this app output
 * RUO_stdout.txt - STDout from RUO. Saved into /logs
 * The analysis folder. Saved into /analysis_folder
-* results zip folder containing zipped folders for each sample and the metrics.tsv.
+* results zip folders - one for each Pan number containing zipped folders for each sample and the metrics.tsv.
 * fastqs - the content of analysis_folder/Logs_Intermediates/CollapsedReads (contains fastqs and all logs)
 * stitchedrealigned BAMs - the content of analysis_folder/Logs_Intermediates/StitchedRealigned (contains BAMs and all logs)
 * results vcfs - the content of analysis_folder/Results (contains all results vcfs)
