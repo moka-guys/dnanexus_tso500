@@ -1,11 +1,9 @@
 {
-  "name": "TSO500_v1.4.0",
-  "title": "TSO500_v1.4.0",
-  "summary": "v1.4.0 - TSO500",
-  "tags": [
-  ],
+  "name": "TSO500_v1.5.0",
+  "title": "TSO500_v1.5.0",
+  "summary": "v1.5.0 - TSO500",
   "properties": {
-    "github release": "v1.4.0"
+    "github release": "v1.5.0"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -18,11 +16,10 @@
       "optional": false
     },
     {
-      "name": "run_folder",
-      "label": "run_folder",
-      "help": "run folder to be analysed",
-      "class": "file",
-      "patterns": ["*.tar"],
+      "name": "project_name",
+      "label": "project name",
+      "help": "project to be analysed",
+      "class": "string",
       "optional": false
     },
     {
@@ -55,7 +52,7 @@
       "class": "array:file",
       "optional": true
     },
-  {
+    {
       "name": "fastqs",
       "label": "fastqs",
       "help": "fastqs.",
@@ -87,7 +84,7 @@
       "name": "results_zip",
       "label": "zipped results folder",
       "help": "zipped results folder.",
-      "class": "file",
+      "class": "array:file",
       "optional": true
     },
     {
@@ -99,21 +96,20 @@
     }
   ],
   "runSpec": {
-    "execDepends": [
-    ],
-    "distribution" : "Ubuntu",
-    "release":"16.04",
-    "file": "src/code.sh",
     "interpreter": "bash",
-    "assetDepends": [
-    ]
+    "headJobOnDemand": false,
+    "distribution": "Ubuntu",
+    "release": "20.04",
+    "version": "0",
+    "file": "src/code.sh"
   },
   "access": {
-    "allProjects":"UPLOAD",
     "network": [
       "*"
-    ]
+    ],
+    "allProjects": "UPLOAD"
   },
+  "ignoreReuse": false,
   "regionalOptions": {
     "aws:us-east-1": {
       "systemRequirements": {
