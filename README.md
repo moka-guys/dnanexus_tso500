@@ -5,12 +5,14 @@ Runs the Illumina TSO500 local analysis app.
 
 ## What inputs are required for this app to run?
 * TSO500_ruo - a zip file (originally provided by Illumina) containing the TSO500 local analysis app.
-* DNAnexus project name
+* DNAnexus project name- provided as a string. NB input is not the project ID
 * Samplesheet
 * analysis_options -  a string which can be passed to the ruo command line
 
 ## How does this app work?
-* The project name is used to generate the folder name. These variables are then used to locate and download runfolder data within  DNAnexus.
+* The DNAnexus project name is used to create the runfolder name variable. The runfolder name is the same as the project name without the '002_' prefix
+* The following command was used to download the files: dx download -r project_name:runfolder_name
+* Note: The runfolder is no longer expected to be archived (e.g .tar)
 * Once the files are downloaded to a folder, the path is provided to TruSight_Oncology_500_RUO.sh
 * Runs the TruSight_Oncology_500_RUO.sh (within the TSO500 local app zip file) providing arguments for analysis folder, runfolder, samplesheet, resourcesFolder and any other analysis options given as an input ($analysis_options)
 
