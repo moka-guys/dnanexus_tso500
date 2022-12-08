@@ -10,6 +10,7 @@ Runs the Illumina TSO500 local analysis app.
 * analysis_options -  a string which can be passed to the ruo command line
 
 ## How does this app work?
+* The project ID is to used to download the required data.
 * Runs the TruSight_Oncology_500_RUO.sh (within the TSO500 local app zip file) providing arguments for analysis folder, runfolder, samplesheet, resourcesFolder and any other analysis options given as an input ($analysis_options)
 
 
