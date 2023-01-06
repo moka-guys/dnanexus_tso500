@@ -13,8 +13,7 @@ unzip $TSO500_ruo_path -d TSO500_ruo
 rm $TSO500_ruo_path
 # change the owner of the app
 chmod 777 TSO500_ruo/TSO500_RUO_LocalApp/
-# download the runfolder input, decompress and save in directory 'runfolder'
-#dx cat "$run_folder" | tar xf - -C runfolder
+# download the runfolder input and save in directory 'runfolder'
 runfolder_name=$(echo "$project_name" | sed 's/002_//')
 echo $runfolder_name
 mkdir runfolder
