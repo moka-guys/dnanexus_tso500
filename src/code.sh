@@ -7,17 +7,20 @@ mark-section "download inputs"
 mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/demultiplex_stats
 
 # download all inputs
-dx-download-all-inputs --parallel 
+dx-download-all-inputs --parallel --except run_folder
 
 unzip $TSO500_ruo_path -d TSO500_ruo
 rm $TSO500_ruo_path
 # change the owner of the app
 chmod 777 TSO500_ruo/TSO500_RUO_LocalApp/
-# download the runfolder input
+# download the runfolder input, decompress and save in directory 'runfolder'
+#dx cat "$run_folder" | tar xf - -C runfolder
 runfolder_name=$(echo "$project_name" | sed 's/002_//')
-mkdir $runfolder_name
-cd $runfolder_name
-dx download -r "$project_name":"${runfolder_name}"'/*'
+echo $runfolder_name
+mkdir runfolder
+cd runfolder
+dx download -r "$project_name":'/'"${runfolder_name}"'/'
+ls 
 cd ../
 
 # move the docker image into ~
@@ -28,7 +31,7 @@ sudo docker load --input /home/dnanexus/trusight-oncology-500-ruo-dockerimage-ru
 
 # run the shell script, specifying the analysis folder, runfolder, samplesheet, resourcesFolder and any analysis options string given as an input
 # pipe stderr into stdout and write this to a file and to screen - this allows a record of the logs to be saved and visible on screen if it goes wrong
-sudo bash TSO500_ruo/TSO500_RUO_LocalApp/TruSight_Oncology_500_RUO.sh --analysisFolder /home/dnanexus/out/analysis_folder/analysis_folder --runFolder /home/dnanexus/$runfolder_name --sampleSheet $samplesheet_path --resourcesFolder /home/dnanexus/TSO500_ruo/TSO500_RUO_LocalApp/resources $analysis_options 2>&1 | tee /home/dnanexus/out/logs/logs/RUO_stdout.txt
+sudo bash TSO500_ruo/TSO500_RUO_LocalApp/TruSight_Oncology_500_RUO.sh --analysisFolder /home/dnanexus/out/analysis_folder/analysis_folder --runFolder /home/dnanexus/runfolder/* --sampleSheet $samplesheet_path --resourcesFolder /home/dnanexus/TSO500_ruo/TSO500_RUO_LocalApp/resources $analysis_options 2>&1 | tee /home/dnanexus/out/logs/logs/RUO_stdout.txt
 
 ### organise outputs to support use in downstream applications
 # check if the results folder exists:
@@ -57,16 +60,16 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv ./$pannum/
 		# there is one folder in the current working directory for each sample)
 		# we want to check if it's the current pan number and if so move it into the subfolder
-		for folder in $(ls -d */)
+		for folder in $(ls -d *.zip)
 			do 
 			# check if sample folder contains the pan number, and also exclude the pan number folder itself
 			if [[ "$folder" == *"$pannum"* ]] && [[ "$folder" != "$pannum"* ]] 
 			then
 				mv $folder ./$pannum/
 			fi
+			# now all samples have been moved into subfolder create a zip folder in output dir for the pan number
+			zip -r /home/dnanexus/out/results_zip/"$pannum"_Results.zip $pannum
 			done
-		# now all samples have been moved into subfolder create a zip folder in output dir for the pan number
-		zip -r /home/dnanexus/out/results_zip/"$pannum"_Results.zip $pannum
 		done
 
 	cd ~
