@@ -4,7 +4,7 @@
 set -x +e
 mark-section "download inputs"
 
-mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/demultiplex_stats
+mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/bclconvert
 
 # download all inputs
 dx-download-all-inputs --parallel --except run_folder
@@ -99,8 +99,13 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 	# copy the demultiplex stats - maintain folder structure as files are named the same for each lane and this would break multiqc app (having multiple files with same name)
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports" ]]
 		then 
-		# move the contents of the DNA Reports folder (one folder per lane) recursively into /QC/demultiplex_stats
-		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports/* /home/dnanexus/out/QC_files/QC/demultiplex_stats/
+		# move the contents of the DNA Reports folder (one folder per lane) recursively into /QC/bclconvert (this is for low throughput (LT) runs. path is different for HT, see below)
+		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/DNA_Reports/* /home/dnanexus/out/QC_files/QC/bclconvert/
+	fi
+	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports" ]]
+		then 
+		# move the contents of the DNA Reports folder (one folder per lane) recursively into /QC/bclconvert (this is for high throughput (HT) runs. path is different for LT, see above)
+		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports/* /home/dnanexus/out/QC_files/QC/bclconvert/
 	fi
 fi
 # upload all outputs
