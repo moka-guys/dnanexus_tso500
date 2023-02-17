@@ -1,4 +1,4 @@
-# TSO500 v1.5.0
+# TSO500 v1.5.1
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
@@ -25,7 +25,7 @@ Runs the Illumina TSO500 local analysis app.
 * stitchedrealigned BAMs - the content of analysis_folder/Logs_Intermediates/StitchedRealigned (contains BAMs and all logs)
 * results vcfs - the content of analysis_folder/Results (contains all results vcfs)
 * metrics_tsv file - An copy of the MetricsOutput.tsv is output into /QC so it can be accessed by multiqc.
-* QC files - MultiQC compatible files saved to /QC (currently bclconvert stats files)
+* QC files - MultiQC compatible files saved to /QC (currently bclconvert stats files- the location of these is updated in the current version)
 
 ## Notes
 * Only tested from starting point of BCLs

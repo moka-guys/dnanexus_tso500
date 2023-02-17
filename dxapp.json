@@ -1,9 +1,9 @@
 {
-  "name": "TSO500_v1.5.0",
-  "title": "TSO500_v1.5.0",
-  "summary": "v1.5.0 - TSO500",
+  "name": "TSO500_v1.5.1",
+  "title": "TSO500_v1.5.1",
+  "summary": "v1.5.1 - TSO500",
   "properties": {
-    "github release": "v1.5.0"
+    "github release": "v1.5.1"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
