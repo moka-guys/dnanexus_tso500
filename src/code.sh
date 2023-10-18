@@ -4,7 +4,10 @@
 set -x +e
 mark-section "download inputs"
 
-mkdir -p results_temp runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/Results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/bclconvert
+samplesheet_part=$(echo $samplesheet_name | grep -o -E "Part[0-9]{1}")
+#echo $samplesheet_name
+
+mkdir -p runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/bclconvert/Lane_1$samplesheet_part /home/dnanexus/out/QC_files/QC/bclconvert/Lane_2$samplesheet_part
 
 # download all inputs
 dx-download-all-inputs --parallel --except run_folder
@@ -14,9 +17,6 @@ rm $TSO500_ruo_path
 # change the owner of the app
 chmod 777 TSO500_ruo/TSO500_RUO_LocalApp/
 # download the runfolder input and save in directory 'runfolder'
-runfolder_name=$(echo "$project_name" | sed 's/002_//')
-echo $runfolder_name
-mkdir runfolder
 cd runfolder
 dx download -r "$project_name":'/'"${runfolder_name}"'/'
 ls 
@@ -36,41 +36,35 @@ sudo bash TSO500_ruo/TSO500_RUO_LocalApp/TruSight_Oncology_500_RUO.sh --analysis
 # check if the results folder exists:
 if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 	then 
-	# create a zip folder for each individual sample
-	# first, to ensure each zip folder doesn't contain the full file tree cd into the results folder
-	cd  /home/dnanexus/out/analysis_folder/analysis_folder/Results;
+	# rename metricsoutput.tsv file to include samplesheet part
+	# check if file exists before trying to move
+	if [[ -e "/home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv" ]]
+		then
+		mv /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput$samplesheet_part.tsv
+		# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
+		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput$samplesheet_part.tsv /home/dnanexus/out/metrics_tsv/QC/
+	fi
+	# move to results_zip output
+	# make folder per pan number in results_zip output folder
+	for pannum in $(ls -d /home/dnanexus/out/analysis_folder/analysis_folder/Results/*/| grep -o -E "Pan[0-9]{1,5}"  | sort --unique)
+		do
+		#make folder
+		mkdir -p /home/dnanexus/out/results_zip/results/$pannum
+		# copy the metrics tsv file into the pan number subfolder
+		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput$samplesheet_part.tsv /home/dnanexus/out/results_zip/results/$pannum/
+		done
+		
+	# move to directory containing results folders
+	cd /home/dnanexus/out/analysis_folder/analysis_folder/Results;
 	# loop through samples, only selecting directories
 	for sample in ./*; do
 		if [[ -d $sample ]];
 			then 
+			pannum=$(echo $sample | grep -o -E "Pan[0-9]{1,5}")
 			# create a zip folder for that specific sample outside of any output folders - these will be zipped together later
-			zip -r /home/dnanexus/results_temp/$sample.zip $sample
+			zip -r /home/dnanexus/out/results_zip/results/$pannum/$sample.zip $sample
 		fi
 	done
-	cd /home/dnanexus/results_temp/
-	
-	# We want to create seperate zip folders for each pan number
-	# so first get a list of Pan numbers
-	for pannum in $(ls -d /home/dnanexus/out/analysis_folder/analysis_folder/Results/*/| grep -o -E "Pan[0-9]{1,5}"  | sort --unique)
-		do
-		#make folder
-		mkdir -p $pannum
-		# copy the metrics tsv file into the pan number subfolder
-		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv ./$pannum/
-		# there is one folder in the current working directory for each sample)
-		# we want to check if it's the current pan number and if so move it into the subfolder
-		for folder in $(ls -d *.zip)
-			do 
-			# check if sample folder contains the pan number, and also exclude the pan number folder itself
-			if [[ "$folder" == *"$pannum"* ]] && [[ "$folder" != "$pannum"* ]] 
-			then
-				mv $folder ./$pannum/
-			fi
-			# now all samples have been moved into subfolder create a zip folder in output dir for the pan number
-			zip -r /home/dnanexus/out/results_zip/"$pannum"_Results.zip $pannum
-			done
-		done
-
 	cd ~
 	# check if folder exists before trying to move
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/CollapsedReads" ]]
@@ -83,12 +77,6 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 		then
 		# mv the bams (for coverage) so they appear as seperate outputs from app for downstream tools, but go to the same place in the project
 		mv /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/
-	fi
-	# check if file exists before trying to move
-	if [[ -e "/home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv" ]]
-		then
-		# copy the metrics_tsv into it's own output so it appears in the /QC folder and can be accessed by downstream tools if required
-		cp /home/dnanexus/out/analysis_folder/analysis_folder/Results/MetricsOutput.tsv /home/dnanexus/out/metrics_tsv/QC/
 	fi
 		# check if folder exists before trying to move
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
@@ -105,7 +93,8 @@ if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Results" ]]
 	if [[ -d "/home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports" ]]
 		then 
 		# move the contents of the DNA Reports folder (one folder per lane) recursively into /QC/bclconvert (this is for high throughput (HT) runs. path is different for LT, see above)
-		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports/* /home/dnanexus/out/QC_files/QC/bclconvert/
+		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports/Lane_1/* /home/dnanexus/out/QC_files/QC/bclconvert/Lane_1$samplesheet_part/
+		cp -r /home/dnanexus/out/analysis_folder/analysis_folder/Logs_Intermediates/FastqGeneration/Reports/Lane_2/* /home/dnanexus/out/QC_files/QC/bclconvert/Lane_2$samplesheet_part/
 	fi
 fi
 # upload all outputs
