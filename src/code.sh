@@ -5,7 +5,6 @@ set -x +e
 mark-section "download inputs"
 
 samplesheet_part=$(echo $samplesheet_name | grep -o -E "Part[0-9]{1}")
-#echo $samplesheet_name
 
 mkdir -p runfolder TSO500_ruo out/logs/logs out/analysis_folder out/results_zip/analysis_folder/ /home/dnanexus/out/fastqs/analysis_folder/Logs_Intermediates/CollapsedReads /home/dnanexus/out/bams_for_coverage/analysis_folder/Logs_Intermediates/StitchedRealigned /home/dnanexus/out/results_vcfs/analysis_folder/Results /home/dnanexus/out/results_zip/results/ /home/dnanexus/out/metrics_tsv/QC /home/dnanexus/out/QC_files/QC/bclconvert/Lane_1$samplesheet_part /home/dnanexus/out/QC_files/QC/bclconvert/Lane_2$samplesheet_part
 

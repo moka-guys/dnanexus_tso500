@@ -2,7 +2,7 @@
 
 ## What does this app do?
 Runs the Illumina TSO500 local analysis app.
-Note: this version of the app has been designed to support the analysis pipeline being run multiple times for a single run, i.e. for a 48 sample run, the samplesheet is split into 3 separate samplesheets containing up to 16 samples each (process handled by https://github.com/moka-guys/automate_demultiplex), and the pipeline set off once for each samplesheet. It therefore renames certain files and outputs to reflect this, e.g. the MetricsOutput.tsv file is renamed to MetricsOutputPart1.tsv. 
+Note: this version of the app has been designed to support the analysis pipeline being run multiple times for a single run, i.e. for a 48 sample run, the samplesheet is split into 3 separate samplesheets containing up to 16 samples each. That process is handled by the [automated scripts](https://github.com/moka-guys/automate_demultiplex), and the pipeline set off once for each samplesheet. It therefore renames certain files and outputs to reflect this, e.g. the MetricsOutput.tsv file is renamed to MetricsOutputPart1.tsv. 
 
 ## What inputs are required for this app to run?
 * TSO500_ruo - a zip file (originally provided by Illumina) containing the TSO500 local analysis app.
