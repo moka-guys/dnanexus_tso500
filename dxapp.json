@@ -1,9 +1,9 @@
 {
-  "name": "TSO500_v1.5.1",
-  "title": "TSO500_v1.5.1",
-  "summary": "v1.5.1 - TSO500",
+  "name": "TSO500_v1.6.0",
+  "title": "TSO500_v1.6.0",
+  "summary": "v1.6.0 - TSO500",
   "properties": {
-    "github release": "v1.5.1"
+    "github release": "v1.6.0"
   },
   "dxapi": "1.0.0",
   "inputSpec": [
@@ -18,7 +18,14 @@
     {
       "name": "project_name",
       "label": "project name",
-      "help": "project to be analysed",
+      "help": "DNAnexus project containing the runfolder",
+      "class": "string",
+      "optional": false
+    },
+    {
+      "name": "runfolder_name",
+      "label": "runfolder name",
+      "help": "runfolder name e.g. 999_A01229_0000_ABCDEFGH_TSO999",
       "class": "string",
       "optional": false
     },
@@ -81,9 +88,9 @@
       "optional": true
     },
     {
-      "name": "results_zip",
-      "label": "zipped results folder",
-      "help": "zipped results folder.",
+      "name": "results_zip", 
+      "label": "zipped results folders",
+      "help": "zipped results folders.",
       "class": "array:file",
       "optional": true
     },
